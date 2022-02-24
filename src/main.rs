@@ -1,4 +1,5 @@
 use rand::Rng;
+use std::fmt::Write as _;
 use std::{env, process, thread, time};
 use std::{fs::File, io::Read};
 
@@ -190,18 +191,21 @@ impl CPU {
                         }
                     }
 
+                    print!("\x1B[2J");
+
+                    let mut buffer = String::new();
+
                     for row in self.monitor {
                         for col in row {
                             if col == 1 {
-                                print!("{}", "*");
+                                write!(buffer, "{}", "*").unwrap();
                             } else {
-                                print!("{}", "_");
+                                write!(buffer, "{}", "_").unwrap();
                             }
                         }
-                        println!("");
+                        write!(buffer, "\n").unwrap();
                     }
-                    println!("");
-                    println!("");
+                    println!("{}", buffer);
                 }
                 // Ex9E - SKP Vx
                 0xE09E..=0xEF9E => {
@@ -272,7 +276,7 @@ impl CPU {
                 self.sound_timer -= 1;
             }
 
-            // thread::sleep(time::Duration::from_secs_f32(1.0 / 120.0));
+            thread::sleep(time::Duration::from_secs_f32(1.0 / 120.0));
         }
     }
 
